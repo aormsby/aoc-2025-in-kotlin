@@ -1,19 +1,60 @@
+import java.lang.Math.floorDiv
+
 fun main() {
-    day(1, "TBD")
-    // Test if implementation meets criteria from the description, like:
-//    check(part1(listOf("test_input")) == 1)
+    day(1, "Secret Entrance")
 
-    // Or read a large test input from the `src/Day01_test.txt` file:
-//    val testInput = readInput("Day01_test")
-//    check(part1(testInput) == 1)
-
-    // Read the input from the `src/Day01.txt` file.
     val input = readInput("Day01")
+//    val input = readInput("Day01_test")
+
     part(1, input) {
-        1
-    }.println()
+        var numZero = 0
+        var dial = 50
+
+        input.forEach { i ->
+            val dir = i.take(1)
+            val turn = i.drop(1).toInt()
+
+            when (dir) {
+                "L" -> dial -= turn
+                "R" -> dial += turn
+            }
+
+            dial = Math.floorMod(dial, 100)
+            if (dial == 0)
+                numZero++
+
+//            println("$dir:$turn:$dial:$numZero")
+
+        }
+
+        numZero
+    }.also { println("Hit 0, $it") }
 
     part(2, input) {
-        2
-    }.println()
+        var numZero = 0
+        var dial = 50
+
+        input.forEach { i ->
+            val dir = i.take(1)
+            val turn = i.drop(1).toInt()
+
+            when (dir) {
+                "L" -> {
+                    if (dial == 0) numZero--
+                    dial -= turn
+                    numZero -= floorDiv(dial, 100) - if (dial % 100 == 0) 1 else 0
+                }
+
+                "R" -> {
+                    dial += turn
+                    numZero += floorDiv(dial, 100)
+                }
+            }
+
+            dial = Math.floorMod(dial, 100)
+//            println("$dir:$turn:$dial:$numZero")
+        }
+
+        numZero
+    }.also { println("Passed 0, $it") }
 }
