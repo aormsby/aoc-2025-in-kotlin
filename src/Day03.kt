@@ -1,5 +1,5 @@
 fun main() {
-    day(1, "TBD")
+    day(3, "TBD")
 
     val input = readInput("Day03")
 //    val input = readInput("Day03_test")

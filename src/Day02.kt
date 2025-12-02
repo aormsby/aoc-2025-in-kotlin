@@ -1,5 +1,5 @@
 fun main() {
-    day(2, "TBD")
+    day(2, "Gift Shop")
 
     val input = splitInput("Day02", ",")
 //    val input = splitInput("Day02_test", ",")
