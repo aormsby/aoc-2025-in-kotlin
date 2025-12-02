@@ -1,5 +1,3 @@
-import kotlin.math.sqrt
-
 fun main() {
     day(2, "TBD")
 
@@ -8,49 +6,48 @@ fun main() {
 
     part(1, input) {
         input.fold(0L) { acc, strRange ->
-            val (n, m) = strRange.split('-')
-            val r = n.toLong()..m.toLong()
-            val iter = r.iterator()
-            var next = acc
+            var localSum = 0L
+            val (n, m) = strRange
+                .split('-')
+                .map { it.toLong() }
 
-            while (iter.hasNext()) {
-                val cur = iter.next()
-                with(cur.toString()) {
-                    if (length % 2 == 0 && substring(0, length / 2) == substring(length / 2, length)) {
-                        next += cur
+            for (cur in n..m) {
+                val s = cur.toString()
+                if (s.length == 1 || s.length % 2 != 0) {
+                    continue
+                }
+                val half = s.length / 2
+                var matches = true
+                for (i in 0 until half) {
+                    if (s[i] != s[i + half]) {
+                        matches = false
+                        break
                     }
                 }
+                if (matches) localSum += cur
             }
-            next
+            acc + localSum
         }
     }.also { println("Mirrored IDs, $it") }
 
+
+
     part(2, input) {
         input.fold(0L) { acc, strRange ->
-            val (n, m) = strRange.split('-')
-            val r = n.toLong()..m.toLong()
-            val iter = r.iterator()
-            var next = acc
+            var localSum = 0L
+            val (n, m) = strRange
+                .split('-')
+                .map { it.toLong() }
 
-            while (iter.hasNext()) {
-                val cur = iter.next()
-                with(cur.toString()) {
-                    if (length != 1) {
-                        for (i in 1..sqrt(length.toFloat()).toInt()) {
-                            if (length % i == 0) {
-                                val other = length / i
-                                if (chunked(i).distinct().size == 1
-                                    || (other != length && chunked(other).distinct().size == 1)
-                                ) {
-                                    next += cur
-                                    break
-                                }
-                            }
-                        }
-                    }
+            for (cur in n..m) {
+                val s = cur.toString()
+                val pattern = Regex("^(.+?)\\1+$")
+                if (pattern.matches(s)) {
+                    localSum += cur
                 }
             }
-            next
+
+            acc + localSum
         }
     }.also { println("Repeating IDs, $it") }
 }
