@@ -22,6 +22,11 @@ fun <T> part(i: Int, input: List<String>, block: (List<String>) -> T): T {
 fun readInput(name: String) = Path("src/$name.txt").readText().trim().lines()
 
 /**
+ * Reads separated values from the given input txt file.
+ */
+fun splitInput(name: String, separator: String) = Path("src/$name.txt").readText().trim().split(separator)
+
+/**
  * Converts string to md5 hash.
  */
 fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteArray()))
