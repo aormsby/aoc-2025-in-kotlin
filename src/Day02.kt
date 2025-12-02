@@ -33,6 +33,8 @@ fun main() {
 
 
     part(2, input) {
+        val pattern = Regex("^(.+?)\\1+$")
+
         input.fold(0L) { acc, strRange ->
             var localSum = 0L
             val (n, m) = strRange
@@ -41,7 +43,6 @@ fun main() {
 
             for (cur in n..m) {
                 val s = cur.toString()
-                val pattern = Regex("^(.+?)\\1+$")
                 if (pattern.matches(s)) {
                     localSum += cur
                 }
