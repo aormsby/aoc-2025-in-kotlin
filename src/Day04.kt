@@ -1,8 +1,8 @@
 fun main() {
     day(4, "Printing Department")
 
-    val input = array2DInput("Day04")
-//    val input = array2DInput("Day04_test")
+    val input = list2DInput("Day04")
+//    val input = list2DInput("Day04_test")
 
     part(1, input) {
         val numRows = input.size

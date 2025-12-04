@@ -29,7 +29,7 @@ fun splitInput(name: String, separator: String) = Path("src/$name.txt").readText
 /**
  * Reads lines into 2D array of chars from the given text file.
  */
-fun array2DInput(name: String) = readInput(name).map { line -> line.toMutableList() }
+fun list2DInput(name: String) = readInput(name).map { line -> line.toMutableList() } as MutableList
 
 /**
  * Converts string to md5 hash.
