@@ -32,6 +32,11 @@ fun splitInput(name: String, separator: String) = Path("src/$name.txt").readText
 fun list2DInput(name: String) = readInput(name).map { line -> line.toMutableList() } as MutableList
 
 /**
+ * Reads grouped lines into separate lists of strings.
+ */
+fun readMultiInput(name: String) = Path("src/$name.txt").readText().trim().split("\n\n").map { it.lines() }
+
+/**
  * Converts string to md5 hash.
  */
 fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteArray()))
