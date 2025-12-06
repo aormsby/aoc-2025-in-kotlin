@@ -4,6 +4,8 @@ fun main() {
     val input = readLines("Day06")
 //    val input = readLines("Day06_test")
 
+    val ops = listOf('*', '+', '-')
+
     part(1, input) {
         val iters = input.map { it.iterator() }
         var totalSum = 0L
@@ -46,38 +48,41 @@ fun main() {
     }.also { println("LTR Sum, $it") }
 
     part(2, input) {
-        val lists = transposeStrings(input, ' ')
+        val lists = input.map { str -> str.padEnd(input.maxOf { it.length }, ' ') }
         var totalSum = 0L
+        val numRows = lists.size
 
-        var i = lists.size - 1
-        val ops = listOf('*', '+', '-')
-        while (i >= 0) {
-            var curOp = ' '
-            val nums = mutableListOf<Long>()
+        var curOp = ' '
+        val curNums = mutableListOf<Long>()
 
-            while (curOp == ' ') {
-                val next = lists[i]
-                if (next.last() in ops) {
-                    curOp = next.last()
-                    nums.add(next.dropLast(1).trim().toLong())
-                    i--
-                } else if (next.isNotBlank()) {
-                    nums.add(next.trim().toLong())
-                    i--
-                } else {
-                    i--
+        for (i in (lists.first().length - 1) downTo 0) {
+            val str = buildString {
+                for (r in 0..<numRows) {
+                    append(lists[r][i])
                 }
-            }
-//            print(nums)
+            }.trim()
 
-            val result = when (curOp) {
-                '+' -> nums.sum()
-                '-' -> nums.reduce { acc, n -> acc - n }
-                else -> nums.reduce { acc, n -> acc * n }
+            if (str.isBlank()) {
+                continue
+            } else if (str.last() in ops) {
+                curOp = str.last()
+                curNums.add(str.dropLast(1).trim().toLong())
+            } else {
+                curNums.add(str.trim().toLong())
             }
-//            println(" : $result")
 
-            totalSum += result
+            if (curOp != ' ') {
+                val result = when (curOp) {
+                    '+' -> curNums.sum()
+                    '-' -> curNums.reduce { acc, n -> acc - n }
+                    else -> curNums.reduce { acc, n -> acc * n }
+                }
+//            println("$curNums : $result")
+
+                totalSum += result
+                curOp = ' '
+                curNums.clear()
+            }
         }
 
         totalSum
