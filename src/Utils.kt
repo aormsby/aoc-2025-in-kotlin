@@ -88,3 +88,31 @@ fun validNeighbors(
 
     return n
 }
+
+/**
+ * Transpose matrix. Yup.
+ */
+fun <T> transpose(matrix: List<List<T>>): List<List<T>> {
+    val numCols = matrix.first().size
+    return List(numCols) { r -> List(matrix.size) { c -> matrix[c][r] } }
+}
+
+/**
+ * Transpose a List<String> by Char (since other transpose() doesn't recognize Strings as List<Char>)
+ */
+fun transposeStrings(rows: List<String>, pad: Char? = null): List<String> {
+    val modified = pad?.let { p ->
+        rows.map { str ->
+            str.padEnd(rows.maxOf { r -> r.length }, p)
+        }
+    } ?: rows
+
+    val numCols = modified.first().length
+    return List(numCols) { c ->
+        buildString(modified.size) {
+            for (r in modified.indices) {
+                append(modified[r][c])
+            }
+        }
+    }
+}

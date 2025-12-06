@@ -46,6 +46,40 @@ fun main() {
     }.also { println("LTR Sum, $it") }
 
     part(2, input) {
-        null
-    }.also { println("TBD, $it") }
+        val lists = transposeStrings(input, ' ')
+        var totalSum = 0L
+
+        var i = lists.size - 1
+        val ops = listOf('*', '+', '-')
+        while (i >= 0) {
+            var curOp = ' '
+            val nums = mutableListOf<Long>()
+
+            while (curOp == ' ') {
+                val next = lists[i]
+                if (next.last() in ops) {
+                    curOp = next.last()
+                    nums.add(next.dropLast(1).trim().toLong())
+                    i--
+                } else if (next.isNotBlank()) {
+                    nums.add(next.trim().toLong())
+                    i--
+                } else {
+                    i--
+                }
+            }
+//            print(nums)
+
+            val result = when (curOp) {
+                '+' -> nums.sum()
+                '-' -> nums.reduce { acc, n -> acc - n }
+                else -> nums.reduce { acc, n -> acc * n }
+            }
+//            println(" : $result")
+
+            totalSum += result
+        }
+
+        totalSum
+    }.also { println("Japanese Sum, $it") }
 }
