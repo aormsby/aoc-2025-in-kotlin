@@ -4,42 +4,47 @@ fun main() {
     val input = readLines("Day06")
 //    val input = readLines("Day06_test")
 
-    val ops = listOf('*', '+', '-')
-
     part(1, input) {
-        val iters = input.map { it.iterator() }
+        val maxLength = input.maxOf { it.length }
+        val lines = input.map { str -> str.padEnd(maxLength, ' ') }
+        val indices = MutableList(lines.size) { 0 }
         var totalSum = 0L
 
-        while (iters.all { it.hasNext() }) {
-            val folded = iters.runningFold("") { _, iter ->
-                var str = ""
-                var nonSpaceFound = false
-                while (iter.hasNext()) {
-                    val next = iter.next()
-                    if (next != ' ') {
-                        nonSpaceFound = true
-                        str += next
-                    }
-                    if (next == ' ' && nonSpaceFound) {
-                        break
+        while (indices.all { it < maxLength }) {
+            var curOp = ' '
+            val curNums = mutableListOf<Long>()
+
+            for (i in 0..<lines.size - 1) {
+                val str = buildString {
+                    while (indices[i] < lines[i].length) {
+                        val next = lines[i][indices[i]]
+                        indices[i] += 1
+                        if (next != ' ') {
+                            append(next)
+                        } else if (isNotBlank()) {
+                            break
+                        }
                     }
                 }
-                str.trim()
-            }.drop(1)
-//            print(folded)
+                curNums.add(str.toLong())
+            }
 
-            val result = when (folded.last()) {
-                "+" -> folded.dropLast(1).sumOf { it.toLong() }
+            while (lines.last().isNotEmpty()) {
+                val next = lines.last()[indices.last()]
+                indices[indices.size - 1] += 1
 
-                "-" -> folded.dropLast(1).fold(folded[1].toLong()) { acc, n ->
-                    acc - n.toLong()
-                }
-
-                else -> folded.dropLast(1).fold(1L) { acc, n ->
-                    acc * n.toLong()
+                if (next != ' ') {
+                    curOp = next
+                    break
                 }
             }
-//            println(" : $result")
+
+            val result = when (curOp) {
+                '+' -> curNums.sum()
+                '-' -> curNums.reduce { acc, n -> acc - n }
+                else -> curNums.reduce { acc, n -> acc * n }
+            }
+//            println("$curNums : $result")
 
             totalSum += result
         }
@@ -50,14 +55,14 @@ fun main() {
     part(2, input) {
         val lists = input.map { str -> str.padEnd(input.maxOf { it.length }, ' ') }
         var totalSum = 0L
-        val numRows = lists.size
 
+        val ops = listOf('*', '+', '-')
         var curOp = ' '
         val curNums = mutableListOf<Long>()
 
         for (i in (lists.first().length - 1) downTo 0) {
             val str = buildString {
-                for (r in 0..<numRows) {
+                for (r in 0..<lists.size) {
                     append(lists[r][i])
                 }
             }.trim()
