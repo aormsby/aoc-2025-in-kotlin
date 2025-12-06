@@ -3,8 +3,8 @@ import java.lang.Math.floorDiv
 fun main() {
     day(1, "Secret Entrance")
 
-    val input = readInput("Day01")
-//    val input = readInput("Day01_test")
+    val input = readLines("Day01")
+//    val input = readLines("Day01_test")
 
     part(1, input) {
         var numZero = 0

@@ -1,8 +1,8 @@
 fun main() {
     day(3, "Lobby")
 
-    val input = readInput("Day03")
-//    val input = readInput("Day03_test")
+    val input = readLines("Day03")
+//    val input = readLines("Day03_test")
 
     part(1, input) {
         input.sumOf { inp ->

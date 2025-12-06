@@ -19,7 +19,7 @@ fun <TInput, TResult> part(i: Int, input: TInput, block: (TInput) -> TResult): T
 /**
  * Reads lines from the given input txt file.
  */
-fun readInput(name: String) = Path("src/$name.txt").readText().trim().lines()
+fun readLines(name: String) = Path("src/$name.txt").readText().trim().lines()
 
 /**
  * Reads separated values from the given input txt file.
@@ -29,7 +29,7 @@ fun splitInput(name: String, separator: String) = Path("src/$name.txt").readText
 /**
  * Reads lines into 2D array of chars from the given text file.
  */
-fun list2DInput(name: String) = readInput(name).map { line -> line.toMutableList() } as MutableList
+fun list2DInput(name: String) = readLines(name).map { line -> line.toMutableList() } as MutableList
 
 /**
  * Reads grouped lines into separate lists of strings.
