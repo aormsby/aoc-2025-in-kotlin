@@ -4,6 +4,13 @@ fun main() {
     val input = readLines("Day06")
 //    val input = readLines("Day06_test")
 
+    fun List<Long>.doOp(op: Char) =
+        when (op) {
+            '+' -> sum()
+            '-' -> reduce { acc, n -> acc - n }
+            else -> reduce { acc, n -> acc * n }
+        }
+
     part(1, input) {
         val maxLength = input.maxOf { it.length }
         val lines = input.map { str -> str.padEnd(maxLength, ' ') }
@@ -39,13 +46,8 @@ fun main() {
                 }
             }
 
-            val result = when (curOp) {
-                '+' -> curNums.sum()
-                '-' -> curNums.reduce { acc, n -> acc - n }
-                else -> curNums.reduce { acc, n -> acc * n }
-            }
+            val result = curNums.doOp(curOp)
 //            println("$curNums : $result")
-
             totalSum += result
         }
 
@@ -53,14 +55,15 @@ fun main() {
     }.also { println("LTR Sum, $it") }
 
     part(2, input) {
-        val lists = input.map { str -> str.padEnd(input.maxOf { it.length }, ' ') }
+        val maxLength = input.maxOf { it.length }
+        val lists = input.map { str -> str.padEnd(maxLength, ' ') }
         var totalSum = 0L
 
         val ops = listOf('*', '+', '-')
         var curOp = ' '
         val curNums = mutableListOf<Long>()
 
-        for (i in (lists.first().length - 1) downTo 0) {
+        for (i in (maxLength - 1) downTo 0) {
             val str = buildString {
                 for (r in 0..<lists.size) {
                     append(lists[r][i])
@@ -77,12 +80,8 @@ fun main() {
             }
 
             if (curOp != ' ') {
-                val result = when (curOp) {
-                    '+' -> curNums.sum()
-                    '-' -> curNums.reduce { acc, n -> acc - n }
-                    else -> curNums.reduce { acc, n -> acc * n }
-                }
-//            println("$curNums : $result")
+                val result = curNums.doOp(curOp)
+//                println("$curNums : $result")
 
                 totalSum += result
                 curOp = ' '
