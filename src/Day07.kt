@@ -9,7 +9,7 @@ fun main() {
         beams[input.first().indexOf('S')] = true
         var splits = 0
 
-        for (line in 1..<input.size) {
+        for (line in 2..<input.size) {
             input[line].forEachIndexed { i, ch ->
                 if (ch == '^' && beams[i]) {
                     splits++
@@ -24,6 +24,27 @@ fun main() {
     }.also { println("Splits, $it") }
 
     part(2, input) {
-        null
-    }.also { println("TBD, $it") }
+        val pathsAtIndex = LongArray(input.first().length)
+        pathsAtIndex[input.first().indexOf('S')] = 1
+
+        var totalPaths = 1L
+
+        for (line in 2..input.size - 2) {
+            var numNewPaths = 0L
+
+            input[line].forEachIndexed { i, ch ->
+                if (ch == '^') {
+                    numNewPaths += pathsAtIndex[i]
+                    pathsAtIndex[i - 1] += pathsAtIndex[i]
+                    pathsAtIndex[i + 1] += pathsAtIndex[i]
+                    pathsAtIndex[i] = 0
+                }
+            }
+
+            totalPaths += numNewPaths
+        }
+
+        totalPaths
+    }.also { println("Timelines, $it") }
 }
+
