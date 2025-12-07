@@ -13,9 +13,9 @@ fun main() {
             input[line].forEachIndexed { i, ch ->
                 if (ch == '^' && beams[i]) {
                     splits++
-                    beams[i] = false
                     beams[i - 1] = true
                     beams[i + 1] = true
+                    beams[i] = false
                 }
             }
         }
