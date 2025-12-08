@@ -46,8 +46,41 @@ fun main() {
     }.also { println("Mult 3 Largest Circuits, $it") }
 
     part(2, input) {
-        null
-    }.also { println("tbd, $it") }
+        data class Edge(
+            val iNodeA: Int,
+            val iNodeB: Int,
+            val dist: Double,
+        )
+
+        val edgesList = mutableListOf<Edge>()
+        val cptTrips = input.map {
+            val (x, y, z) = it.split(',').map(String::toDouble)
+            Triple(x, y, z)
+        }
+
+        for (i in 0..<cptTrips.size) {
+            for (j in (i + 1)..<cptTrips.size) {
+                if (i != j) {
+                    val dist = euclidDist3D(cptTrips[i], cptTrips[j])
+                    edgesList.add(Edge(i, j, dist))
+                }
+            }
+        }
+
+        val dsu = DisjointSetUnion(cptTrips.size)
+        edgesList.sortBy { it.dist }
+
+        var i = 0
+        while (dsu.setSize.max() != cptTrips.size) {
+            val (nodeA, nodeB, _) = edgesList[i]
+            dsu.union(nodeA, nodeB)
+            i++
+        }
+
+        with(edgesList[i - 1]) {
+            cptTrips[iNodeA].first.toLong() * cptTrips[iNodeB].first.toLong()
+        }
+    }.also { println("Outlet Distance, $it") }
 }
 
 fun euclidDist3D(p1: Triple<Double, Double, Double>, p2: Triple<Double, Double, Double>): Double {
@@ -60,7 +93,7 @@ fun euclidDist3D(p1: Triple<Double, Double, Double>, p2: Triple<Double, Double, 
 // union-find
 class DisjointSetUnion(numNodes: Int) {
     // 'it' represents and populates 0..numNodes
-    private val parent = IntArray(numNodes) { it }
+    val parent = IntArray(numNodes) { it }
     val setSize = IntArray(numNodes) { 1 }
 
     fun getParent(node: Int): Int {
