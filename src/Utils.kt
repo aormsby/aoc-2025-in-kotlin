@@ -2,6 +2,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.math.sqrt
 import kotlin.time.measureTimedValue
 
 fun day(i: Int, title: String) {
@@ -115,4 +116,56 @@ fun transposeStrings(rows: List<String>, pad: Char? = null): List<String> {
             }
         }
     }
+}
+
+/**
+ * Calculate straight line distance between 3D points
+ */
+fun euclidDist3D(p1: Triple<Double, Double, Double>, p2: Triple<Double, Double, Double>): Double {
+    val dx = (p1.first - p2.first)
+    val dy = (p1.second - p2.second)
+    val dz = (p1.third - p2.third)
+    return sqrt((dx * dx) + (dy * dy) + (dz * dz))
+}
+
+/**
+ * For union-find
+ */
+class DisjointSetUnion(numNodes: Int) {
+    // 'it' represents and populates 0..numNodes
+    val parent = IntArray(numNodes) { it }
+    val setSize = IntArray(numNodes) { 1 }
+
+    fun getParent(node: Int): Int {
+        var cur = node
+        while (parent[cur] != cur) {
+            // active path compression
+            parent[cur] = parent[parent[cur]]
+            cur = parent[cur]
+        }
+        return cur
+    }
+
+    fun union(nodeA: Int, nodeB: Int): Boolean {
+        var parA = getParent(nodeA)
+        var parB = getParent(nodeB)
+
+        if (parA == parB)
+            return false
+
+        // swap parent fields to always parent the smaller set to the other
+        if (setSize[parA] < setSize[parB]) {
+            val temp = parA
+            parA = parB
+            parB = temp
+        }
+
+        parent[parB] = parA
+        setSize[parA] += setSize[parB]
+
+        return true
+    }
+
+    override fun toString(): String =
+        "${parent.joinToString(", ")}\n${setSize.joinToString(", ")}"
 }
