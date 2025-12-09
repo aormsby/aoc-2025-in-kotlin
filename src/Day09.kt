@@ -18,7 +18,7 @@ fun main() {
         for (i in 0..<coords.size) {
             for (j in (i + 1)..<coords.size) {
                 val (a, b) = coords[i] to coords[j]
-                val area = rectArea(coords[i], coords[j])
+                val area = rectArea(a, b)
                 areaList.add(AocRect(a, b, area))
             }
         }
@@ -53,23 +53,37 @@ fun main() {
         val areaList = mutableListOf<AocRect>()
         for (i in 0..<coords.size) {
             for (j in (i + 1)..<coords.size) {
-                val (a, b) = coords[i] to coords[j]
-                val rowRange = min(a.y, b.y)..max(a.y, b.y)
-                val colEnds = listOf(min(a.x, b.x), max(a.x, b.x))
+                val a = coords[i]
+                val b = coords[j]
+                val topRow = min(a.y, b.y)
+                val bottomRow = max(a.y, b.y)
+                val innerRowRange = (topRow + 1)..<bottomRow
+                val colLeft = min(a.x, b.x)
+                val colRight = max(a.x, b.x)
 
-                var doArea = true
-                for (r in rowRange) {
+                var addArea = true
+
+                for (r in setOf(topRow, bottomRow)) {
                     val vlr = validLineRanges[r]!!
-                    if (colEnds.any { c -> c !in vlr }) {
-                        doArea = false
+                    if (colLeft >= vlr.first && colRight <= vlr.last) {
+                        addArea = false
                         break
                     }
                 }
+                if (!addArea) continue
 
-                if (doArea) {
-                    val area = rectArea(a, b)
-                    areaList.add(AocRect(a, b, area))
+                for (r in innerRowRange) {
+                    val vlr = validLineRanges[r]!!
+                    if (colLeft >= vlr.first && colRight <= vlr.last) {
+                        addArea = false
+                        break
+                    }
                 }
+                if (!addArea) continue
+
+                val area = rectArea(a, b)
+                areaList.add(AocRect(a, b, area))
+
             }
         }
 
