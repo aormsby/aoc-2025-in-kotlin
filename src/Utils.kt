@@ -2,6 +2,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.time.measureTimedValue
 
@@ -127,6 +128,19 @@ fun euclidDist3D(p1: Triple<Double, Double, Double>, p2: Triple<Double, Double, 
     val dz = (p1.third - p2.third)
     return sqrt((dx * dx) + (dy * dy) + (dz * dz))
 }
+
+/**
+ *
+ */
+fun manhattanDist(p1: Pair<Long, Long>, p2: Pair<Long, Long>): Long =
+    abs(p1.first - p2.first) + abs(p1.second - p2.second)
+
+/**
+ *
+ */
+fun rectArea(p1: Pair<Long, Long>, p2: Pair<Long, Long>): Long =
+    (abs(p1.first - p2.first) + 1) * (abs(p1.second - p2.second) + 1)
+
 
 /**
  * For union-find
