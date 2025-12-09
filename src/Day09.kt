@@ -1,3 +1,4 @@
+import java.awt.Point
 import kotlin.math.max
 import kotlin.math.min
 
@@ -10,7 +11,7 @@ fun main() {
     part(1, input) {
         val coords = input.map { line ->
             val (col, row) = line.split(',').map { it.toInt() }
-            GridPoint(col, row)
+            Point(col, row)
         }
         val areaList = mutableListOf<AocRect>()
 
@@ -28,7 +29,7 @@ fun main() {
     part(2, input) {
         val coords = input.map { line ->
             val (col, row) = line.split(',').map { it.toInt() }
-            GridPoint(col, row)
+            Point(col, row)
         }
         val validLineRanges = mutableMapOf<Int, IntRange>()
 
@@ -36,9 +37,9 @@ fun main() {
         (coords + coords.first())
             .windowed(2)
             .forEach { (a, b) ->
-                val rowMin = min(a.row, b.row)
-                val rowMax = max(a.row, b.row)
-                val newRange = min(a.col, b.col)..max(a.col, b.col)
+                val rowMin = min(a.y, b.y)
+                val rowMax = max(a.y, b.y)
+                val newRange = min(a.x, b.x)..max(a.x, b.x)
 
                 // loops one row if same min/max, range if not)
                 for (line in rowMin..rowMax) {
@@ -48,13 +49,13 @@ fun main() {
                     } ?: newRange
                 }
             }
-        
+
         val areaList = mutableListOf<AocRect>()
         for (i in 0..<coords.size) {
             for (j in (i + 1)..<coords.size) {
                 val (a, b) = coords[i] to coords[j]
-                val rowRange = min(a.row, b.row)..max(a.row, b.row)
-                val colEnds = listOf(min(a.col, b.col), max(a.col, b.col))
+                val rowRange = min(a.y, b.y)..max(a.y, b.y)
+                val colEnds = listOf(min(a.x, b.x), max(a.x, b.x))
 
                 var doArea = true
                 for (r in rowRange) {

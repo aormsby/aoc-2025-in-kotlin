@@ -1,3 +1,4 @@
+import java.awt.Point
 import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
@@ -134,8 +135,8 @@ fun euclidDist3D(p1: Triple<Double, Double, Double>, p2: Triple<Double, Double, 
 /**
  * Calculates area of Rect between 2D points
  */
-fun rectArea(p1: GridPoint, p2: GridPoint): Long =
-    (abs(p1.col.toLong() - p2.col.toLong()) + 1) * (abs(p1.row.toLong() - p2.row.toLong()) + 1)
+fun rectArea(p1: Point, p2: Point): Long =
+    (abs(p1.x.toLong() - p2.x.toLong()) + 1) * (abs(p1.y.toLong() - p2.y.toLong()) + 1)
 
 
 /**
@@ -200,13 +201,8 @@ fun mergeRanges(r1: IntRange?, r2: IntRange?): IntRange? {
     }
 }
 
-data class GridPoint(
-    val col: Int, // x
-    val row: Int, // y
-)
-
 data class AocRect(
-    val corner1: GridPoint,
-    val corner2: GridPoint,
+    val corner1: Point,
+    val corner2: Point,
     val area: Long,
 )
