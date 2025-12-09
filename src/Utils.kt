@@ -3,6 +3,8 @@ import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 import kotlin.time.measureTimedValue
 
@@ -130,16 +132,10 @@ fun euclidDist3D(p1: Triple<Double, Double, Double>, p2: Triple<Double, Double, 
 }
 
 /**
- *
+ * Calculates area of Rect between 2D points
  */
-fun manhattanDist(p1: Pair<Long, Long>, p2: Pair<Long, Long>): Long =
-    abs(p1.first - p2.first) + abs(p1.second - p2.second)
-
-/**
- *
- */
-fun rectArea(p1: Pair<Long, Long>, p2: Pair<Long, Long>): Long =
-    (abs(p1.first - p2.first) + 1) * (abs(p1.second - p2.second) + 1)
+fun rectArea(p1: GridPoint, p2: GridPoint): Long =
+    (abs(p1.col.toLong() - p2.col.toLong()) + 1) * (abs(p1.row.toLong() - p2.row.toLong()) + 1)
 
 
 /**
@@ -183,3 +179,34 @@ class DisjointSetUnion(numNodes: Int) {
     override fun toString(): String =
         "${parent.joinToString(", ")}\n${setSize.joinToString(", ")}"
 }
+
+/**
+ * Attempt to merge overlapping ranges, return combined or null
+ */
+fun mergeRanges(r1: IntRange?, r2: IntRange?): IntRange? {
+    if (r1 == null || r2 == null)
+        return null
+
+    val (a, b) =
+        if (r1.first <= r2.first) r1 to r2
+        else r2 to r1
+
+    return when {
+        // does not intersect
+        a.last < b.first -> null
+
+        // intersects, return combined
+        else -> min(a.first, b.first)..max(a.last, b.last)
+    }
+}
+
+data class GridPoint(
+    val col: Int, // x
+    val row: Int, // y
+)
+
+data class AocRect(
+    val corner1: GridPoint,
+    val corner2: GridPoint,
+    val area: Long,
+)
