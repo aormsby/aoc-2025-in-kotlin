@@ -206,3 +206,11 @@ data class AocRect(
     val corner2: Point,
     val area: Long,
 )
+
+fun bitmaskOf(indices: List<Int>): Int {
+    var mask = 0
+    for (i in indices) {
+        mask = mask or (1 shl i)
+    }
+    return mask
+}
