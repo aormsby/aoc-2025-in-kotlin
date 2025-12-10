@@ -6,18 +6,11 @@ fun main() {
 
     part(1, input) { input ->
         input.fold(0) { acc, line ->
-            var lightMask: Int = -1
+            var lightMask = 0
             val buttonMasks = mutableListOf<Int>()
 
             line.split(' ').forEach { group ->
-                if (group.first() == '[') {
-                    lightMask = bitmaskOf(
-                        group.substring(1, group.length - 1)
-                            .mapIndexedNotNull { i, ch ->
-                                if (ch == '#') i
-                                else null
-                            })
-                } else if (group.first() != '{') {
+                if (group.first() == '(') {
                     buttonMasks.add(
                         bitmaskOf(
                             group.substring(1, group.length - 1)
@@ -25,46 +18,47 @@ fun main() {
                                 .map { it.toInt() }
                         )
                     )
+                } else if (group.first() == '[') {
+                    lightMask = bitmaskOf(
+                        group.substring(1, group.length - 1)
+                            .mapIndexedNotNull { i, ch ->
+                                if (ch == '#') i
+                                else null
+                            }
+                    )
                 }
             }
-            check(lightMask != -1)
+            check(lightMask != 0)
 
-            var smallestCombo = -1
-            for (comboSize in 1..<buttonMasks.size) {
-                val pointers = IntArray(comboSize) { it }
+            // BFS BEGIN
+            val masksSeen = HashSet<Int>()
+            val q = ArrayDeque<Pair<Int, Int>>() // (mask, distance)
+            var fewestPresses = -1
 
-                while (true) {
-                    val mask = (0 until comboSize).fold(0) { acc, i ->
-                        acc xor buttonMasks[pointers[i]]
-                    }
+            // start by marking 0 as seen, kicks off the queue
+            masksSeen.add(0)
+            q.add(0 to 0)
 
-                    if (mask == lightMask) {
-                        smallestCombo = comboSize
+            while (fewestPresses == -1 && q.isNotEmpty()) {
+                val (mask, dist) = q.removeFirst()
+                for (b in buttonMasks) {
+                    val next = mask xor b
+                    if (next == lightMask) {
+                        fewestPresses = dist + 1
                         break
                     }
-
-                    var cur = comboSize - 1
-                    while (cur >= 0 && pointers[cur] == buttonMasks.size - comboSize + cur) cur--
-                    if (cur < 0) break
-
-                    pointers[cur]++
-                    for (other in (cur + 1) until comboSize) {
-                        pointers[other] = pointers[other - 1] + 1
+                    // if cur mask not seen, queue next in branch, else skip
+                    if (masksSeen.add(next)) {
+                        q.add(next to (dist + 1))
                     }
-                }
-
-                if (smallestCombo != -1) {
-                    break
                 }
             }
 
-            if (smallestCombo != -1)
-                acc + smallestCombo
-            else acc + buttonMasks.size
+            acc + fewestPresses
         }
     }.also { println("Lights - Sum Fewest Presses, $it") }
 
-    part(2, input) {
+    part(2, input) { input ->
         null
-    }.also { println("TBD, $it") }
+    }.also { println("Joltage - Sum Fewest Presses, $it") }
 }
