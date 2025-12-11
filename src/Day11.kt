@@ -27,6 +27,12 @@ fun main() {
         dfs("you")
     }.also { println("Paths OUT, $it") }
 
+    // STOLEN CODE. Not proud of it, but this challenge blew monkey chunks.
+    // Tried strongly pruned BFS. Tried A*. Tried vibe coding my way to
+    // success (and felt like a dirty boy doing it). In the end, ripped off code from
+    // 'eagely' @ https://codeberg.org/eagely/adventofcode-kotlin/src/branch/main/src/main/kotlin/solutions/y2025/Day10.kt
+    // Maybe I'll learn about this nifty Z3 thing everyone else appears to have used......
+    // Cheers, mate!
     part(2, input) { inp ->
         val outputMap = mutableMapOf<String, List<String>>()
         inp.forEach { line ->

@@ -13,3 +13,8 @@ tasks {
         gradleVersion = "9.2.1"
     }
 }
+
+dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation("tools.aqua:z3-turnkey:4.14.1")
+}

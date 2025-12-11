@@ -1,3 +1,6 @@
+import com.microsoft.z3.Context
+import com.microsoft.z3.Status
+
 fun main() {
     day(10, "Factory")
 
@@ -59,6 +62,47 @@ fun main() {
     }.also { println("Lights - Sum Fewest Presses, $it") }
 
     part(2, input) { input ->
-        null
+        input.fold(0L) { acc, line ->
+            var target = intArrayOf()
+            val buttons = mutableListOf<IntArray>()
+
+            line.split(' ').forEach { group ->
+                if (group.first() == '(') {
+                    buttons.add(
+                        group.substring(1, group.length - 1)
+                            .split(',')
+                            .map { it.toInt() }
+                            .toIntArray()
+                    )
+                } else if (group.first() == '{') {
+                    target =
+                        group.substring(1, group.length - 1)
+                            .split(',')
+                            .map { it.toInt() }
+                            .toIntArray()
+                }
+            }
+
+            Context().use { ctx ->
+                val opt = ctx.mkOptimize()
+                val vars = buttons.indices.map { ctx.mkIntConst("b$it") }
+                vars.forEach { opt.Add(ctx.mkGe(it, ctx.mkInt(0))) }
+                target.indices.forEach { i ->
+                    val terms = buttons.withIndex().filter { i in it.value }.map { vars[it.index] }
+                    if (terms.isNotEmpty()) {
+                        val sum = if (terms.size == 1) terms[0]
+                        else ctx.mkAdd(*terms.toTypedArray())
+                        opt.Add(ctx.mkEq(sum, ctx.mkInt(target[i])))
+                    } else if (target[i] != 0) throw RuntimeException("sigh")
+                }
+                opt.MkMinimize(ctx.mkAdd(*vars.toTypedArray()))
+                if (opt.Check() == Status.SATISFIABLE) {
+                    return@fold acc + vars.sumOf { opt.model.evaluate(it, false).toString().toInt() }
+                } else 0
+            }
+
+
+            return@fold acc
+        }
     }.also { println("Joltage - Sum Fewest Presses, $it") }
 }
